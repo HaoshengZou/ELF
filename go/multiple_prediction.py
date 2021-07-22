@@ -33,9 +33,9 @@ class MultiplePrediction:
 
             # backward.
             loss = self.policy_loss((pred + eps).log(), Variable(targets[:, i]))
-            stats["loss" + str(i)].feed(loss.data[0])
+            stats["loss" + str(i)].feed(loss.item())
             total_loss = add_err(total_loss, loss / (i + 1))
 
-        stats["total_loss"].feed(total_loss.data[0])
+        stats["total_loss"].feed(total_loss.item())
         if not self.args.multipred_no_backprop:
             total_loss.backward()

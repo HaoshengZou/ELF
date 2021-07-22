@@ -81,7 +81,7 @@ class ActorCriticChanged:
                 predict_err = self.prediction_loss(pred_h, Variable(next_h))
                 overall_err = add_err(overall_err, predict_err)
 
-                stats["predict_err"].feed(predict_err.data[0])
+                stats["predict_err"].feed(predict_err.item())
 
                 if args.contrastive_V:
                     # Sample an action other than the current action.
@@ -102,8 +102,8 @@ class ActorCriticChanged:
                     rank_err = self.rank_loss(pi_V["V"], pi_V_other["V"], Variable(all_one))
                     value_err = self.prediction_loss(pi_V["V"], Variable(R))
 
-                    stats["rank_err"].feed(rank_err.data[0])
-                    stats["value_err"].feed(value_err.data[0])
+                    stats["rank_err"].feed(rank_err.item())
+                    stats["value_err"].feed(value_err.item())
 
                     overall_err = add_err(overall_err, rank_err)
                     overall_err = add_err(overall_err, value_err)
@@ -114,7 +114,7 @@ class ActorCriticChanged:
             next_h = state_curr["h"].data
 
             if overall_err is not None:
-                stats["cost"].feed(overall_err.data[0])
+                stats["cost"].feed(overall_err.item())
             #print("[%d]: reward=%.4f, sum_reward=%.2f, acc_reward=%.4f, value_err=%.4f, policy_err=%.4f" % (i, r.mean(), r.sum(), R.mean(), value_err.data[0], policy_err.data[0]))
 
         if args.h_match_policy or args.h_match_action:
@@ -134,12 +134,12 @@ class ActorCriticChanged:
                 if t > 0:
                     if args.h_match_policy:
                         policy_err = self.policy_match_loss(pi_h, Variable(policies[t]))
-                        stats["policy_match_err%d" % t].feed(policy_err.data[0])
+                        stats["policy_match_err%d" % t].feed(policy_err.item())
                     elif args.h_match_action:
                         # Add normalization constant
                         logpi_h = (pi_h + args.min_prob).log()
                         policy_err = self.policy_max_action_loss(logpi_h, Variable(a))
-                        stats["policy_match_a_err%d" % t].feed(policy_err.data[0])
+                        stats["policy_match_a_err%d" % t].feed(policy_err.item())
 
                     total_policy_err = add_err(total_policy_err, policy_err)
 
@@ -147,4 +147,4 @@ class ActorCriticChanged:
                 h = future_pred["hf"]
 
             total_policy_err.backward()
-            stats["total_policy_match_err"].feed(total_policy_err.data[0])
+            stats["total_policy_match_err"].feed(total_policy_err.item())

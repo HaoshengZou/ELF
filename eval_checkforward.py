@@ -126,10 +126,10 @@ class ForwardActor:
         if batchsize == 1:
             print("================")
             print("[%d] Predict with forward model: " % seqs[0])
-            print(tensor2str(state_curr_given_h["pi"].data[0]))
+            print(tensor2str(state_curr_given_h["pi"].item()))
             print("action = " + str(action[0]))
             print("[%d] Predict using current observation" % seqs[0])
-            print(tensor2str(state_curr["pi"].data[0]))
+            print(tensor2str(state_curr["pi"].item()))
             print("================")
 
         return reply_msg

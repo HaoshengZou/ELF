@@ -55,7 +55,7 @@ class ForwardPredict:
 
             hs.append(Variable(h))
 
-        stats["predict_err"].feed(total_predict_err.data[0])
+        stats["predict_err"].feed(total_predict_err.item())
         total_predict_err.backward()
 
 

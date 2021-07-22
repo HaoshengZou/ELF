@@ -257,7 +257,7 @@ class ForwardTracker:
             return
 
         batch_info = { k : v if isinstance(v, (int, float, str)) else v[0] for k, v in curr_batch.items() if is_viskey(k) }
-        fd_info = { k : v.data[0] for k, v in forwarded.items() if is_viskey(k) }
+        fd_info = { k : v.item() for k, v in forwarded.items() if is_viskey(k) }
 
         t0 = batch_info["_seq"]
         additional_info = { }

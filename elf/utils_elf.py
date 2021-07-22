@@ -152,7 +152,7 @@ class Batch:
                 elif isinstance(v, (int, float)):
                     bk.fill_(v)
                 else:
-                    bk[:] = v
+                    bk = v
 
             else:
                 raise ValueError("Batch[%s]: \"%s\" in reply is missing in batch specification" % (batch_key, k))
@@ -188,13 +188,13 @@ class Batch:
         else:
             return self[key][s]
 
-    def transfer_cpu2gpu(self, batch_gpu, async=True):
+    def transfer_cpu2gpu(self, batch_gpu, async_=True):
         ''' transfer batch data to gpu '''
         # For each time step
         for k, v in self.batch.items():
-            batch_gpu[k].copy_(v, async=async)
+            batch_gpu[k].copy_(v, non_blocking=async_)
 
-    def transfer_cpu2cpu(self, batch_dst, async=True):
+    def transfer_cpu2cpu(self, batch_dst, async_=True):
         ''' transfer batch data to cpu '''
 
         # For each time step
